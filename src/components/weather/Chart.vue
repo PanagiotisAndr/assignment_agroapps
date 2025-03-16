@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
+import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue'
 import { useWeatherStore } from '../../stores/useWeatherStore'
 
 // Loading the store
@@ -10,6 +10,13 @@ const canvasRef = ref(null)
 // Temperature data for the chart (Y-axis)
 const temperatureData = computed(() => weatherStore.chartData.temperatureData)
 const days = computed(() => weatherStore.chartData.days)
+
+// Monitoring the data and plotting a graph once they are loaded.
+watch([temperatureData, days], ([newTemperatureData, newDays]) => {
+  if (newTemperatureData.length > 0 && newDays.length > 0) {
+    drawChart()
+  }
+})
 
 // Function to draw the temperature line chart
 const drawChart = () => {
